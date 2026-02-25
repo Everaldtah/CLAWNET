@@ -137,6 +137,7 @@ type LogConfig struct {
 // DefaultConfig returns the default configuration
 func DefaultConfig() *Config {
 	return &Config{
+		viper: viper.New(),
 		Node: NodeConfig{
 			Name:        "clawnet-node",
 			DataDir:     ".clawnet",
