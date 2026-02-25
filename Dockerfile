@@ -36,9 +36,6 @@ COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 # Copy binary
 COPY --from=builder /build/clawnet /clawnet
 
-# Create data directory
-VOLUME ["/data"]
-
 # Expose ports
 # 4001 - QUIC
 # 4002 - TCP
