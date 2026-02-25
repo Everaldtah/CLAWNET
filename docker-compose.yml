@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  clawnet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clawnet-node
+    restart: unless-stopped
+    
+    # Network configuration
+    networks:
+      - clawnet
+    
+    # Port mappings
+    ports:
+      - "4001:4001/udp"  # QUIC
+      - "4002:4002/tcp"  # TCP
+    
+    # Volume mounts
+    volumes:
+      - ./data:/data
+      - ./configs:/configs:ro
+    
+    # Environment variables
+    environment:
+      - CLAWNET_NODE_NAME=${NODE_NAME:-clawnet-docker}
+      - CLAWNET_LOG_LEVEL=${LOG_LEVEL:-info}
+      - CLAWNET_MARKET_ENABLED=${MARKET_ENABLED:-true}
+      - CLAWNET_NETWORK_ENABLE_DHT=${ENABLE_DHT:-true}
+      - CLAWNET_NETWORK_ENABLE_MDNS=${ENABLE_MDNS:-false}
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "/clawnet", "version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Command override
+    command:
+      - "--config"
+      - "/configs/config.yaml"
+      - "--log-level"
+      - "${LOG_LEVEL:-info}"
+
+  # Optional: OpenClaw AI service
+  openclaw:
+    image: openclaw/server:latest
+    container_name: openclaw-server
+    restart: unless-stopped
+    profiles:
+      - "with-ai"
+    
+    networks:
+      - clawnet
+    
+    ports:
+      - "8080:8080"
+    
+    volumes:
+      - openclaw-data:/data
+    
+    environment:
+      - OPENCLAW_MODEL=${OPENCLAW_MODEL:-default}
+      - OPENCLAW_MAX_TOKENS=${OPENCLAW_MAX_TOKENS:-4096}
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+
+networks:
+  clawnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  clawnet-data:
+  openclaw-data:

@@ -1,0 +1,153 @@
+# CLAWNET Configuration File
+# Copy to ~/.clawnet/config.yaml and customize
+
+# Node configuration
+node:
+  # Node name (defaults to hostname)
+  name: "clawnet-node"
+  
+  # Data directory
+  data_dir: ".clawnet"
+  
+  # Listen addresses
+  # 0.0.0.0:0 means listen on all interfaces with random port
+  listen_addrs:
+    - "/ip4/0.0.0.0/udp/0/quic-v1"
+    - "/ip4/0.0.0.0/tcp/0"
+  
+  # Bootstrap peers for DHT
+  # Add known peer addresses here
+  bootstrap_peers: []
+  #  - "/ip4/1.2.3.4/udp/4001/quic-v1/p2p/QmPeerID"
+  
+  # Node capabilities
+  capabilities:
+    - "compute"
+    - "storage"
+    - "ai-inference"
+    - "shell-execution"
+  
+  # Peer limits
+  max_peers: 100
+  min_peers: 5
+
+# Network configuration
+network:
+  # Transport protocols
+  enable_quic: true
+  enable_tcp: true
+  
+  # Port configuration (0 = random)
+  quic_port: 0
+  tcp_port: 0
+  
+  # Discovery
+  enable_mdns: true
+  enable_dht: true
+  dht_mode: "auto"  # auto, server, client
+  
+  # Connection settings
+  connection_timeout: "30s"
+  ping_interval: "15s"
+  
+  # NAT and relay
+  enable_relay: true
+  enable_nat_portmap: true
+
+# Market configuration
+market:
+  enabled: true
+  
+  # Initial wallet balance (credits)
+  initial_wallet_balance: 1000.0
+  
+  # Bidding configuration
+  min_bid_increment: 0.1
+  max_concurrent_auctions: 10
+  bid_timeout: "5s"
+  task_timeout: "60s"
+  
+  # Winner selection weights (must sum to 1.0)
+  weights:
+    price: 0.4
+    reputation: 0.3
+    latency: 0.1
+    confidence: 0.2
+  
+  # Escrow settings
+  escrow_required: true
+  
+  # Reputation decay rate (per day)
+  reputation_decay_rate: 0.01
+  
+  # Swarm mode
+  enable_swarm_mode: true
+  
+  # Security settings
+  anti_collusion_checks: true
+  rate_limit_bids: 100
+  fraud_detection: true
+  
+  # Consensus mode
+  consensus_mode: false
+  consensus_threshold: 2
+
+# Memory synchronization configuration
+memory:
+  enabled: true
+  
+  # Sync interval
+  sync_interval: "30s"
+  
+  # Maximum memory size (bytes)
+  max_memory_size: 1073741824  # 1GB
+  
+  # Compression level (1-9)
+  compression_level: 6
+  
+  # Encryption
+  encryption_enabled: true
+  
+  # Garbage collection interval
+  gc_interval: "5m"
+
+# OpenClaw AI integration
+openclaw:
+  enabled: true
+  
+  # API endpoint
+  api_endpoint: "http://localhost:8080"
+  
+  # Request timeout
+  api_timeout: "30s"
+  
+  # Default model parameters
+  max_tokens: 4096
+  temperature: 0.7
+  model: "default"
+  
+  # Enable streaming responses
+  enable_streaming: true
+
+# Terminal UI configuration
+tui:
+  enabled: true
+  theme: "dark"
+  refresh_rate: 10
+  
+  # Panel visibility
+  show_peers_panel: true
+  show_market_panel: true
+  show_memory_panel: true
+  show_log_panel: true
+
+# Logging configuration
+log:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json, text
+  output: "stdout"  # stdout, stderr, file
+  
+  # Log rotation (when output is file)
+  max_size: 100    # MB
+  max_backups: 3
+  max_age: 7       # days

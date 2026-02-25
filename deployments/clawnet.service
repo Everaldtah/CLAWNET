@@ -1,0 +1,52 @@
+[Unit]
+Description=CLAWNET - Distributed AI Mesh Network
+Documentation=https://github.com/clawnet/clawnet
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=clawnet
+Group=clawnet
+
+# Working directory
+WorkingDirectory=/var/lib/clawnet
+
+# Binary location
+ExecStart=/usr/local/bin/clawnet --config /etc/clawnet/config.yaml --log-level info
+
+# Restart policy
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/clawnet
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+# Environment
+Environment="CLAWNET_NODE_NAME=%H"
+Environment="GOMAXPROCS=4"
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=clawnet
+
+[Install]
+WantedBy=multi-user.target

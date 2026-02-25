@@ -1,0 +1,44 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+clawnet
+clawnet-*
+
+# Build output
+build/
+dist/
+
+# Go workspace
+go.work
+
+# Vendor
+vendor/
+
+# Test coverage
+*.out
+coverage.out
+coverage.html
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Data
+data/
+*.db
+*.key
+
+# Logs
+*.log
+logs/
+
+# Config with secrets
+config.yaml
