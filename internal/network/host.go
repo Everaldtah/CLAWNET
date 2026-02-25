@@ -129,7 +129,7 @@ func (h *Host) buildHostOptions() []libp2p.Option {
 	}
 
 	// Connection manager
-	cm := connmgr.NewConnManager(
+	cm, _ := connmgr.NewConnManager(
 		h.cfg.Node.MinPeers,
 		h.cfg.Node.MaxPeers,
 		connmgr.WithGracePeriod(time.Minute),
