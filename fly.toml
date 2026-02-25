@@ -1,0 +1,29 @@
+# fly.toml configuration for CLAWNET
+app = "clawnet"
+primary_region = "ord"
+
+[build]
+  builtin = "go"
+
+[env]
+  CLAWNET_LOG_LEVEL = "info"
+
+[[services]]
+  protocol = "udp"
+  internal_port = 4001
+
+  [[services.ports]]
+    port = 4001
+  [[services.ports]]
+    port = 4001
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 4002
+
+  [[services.ports]]
+    port = 4002
+
+[vm]
+  cpu = "1"
+  memory = "512mb"

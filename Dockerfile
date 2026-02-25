@@ -47,5 +47,5 @@ EXPOSE 4001/udp 4002/tcp
 # Set entrypoint
 ENTRYPOINT ["/clawnet"]
 
-# Default command
-CMD ["--config", "/data/config.yaml"]
+# Run with default config (no config file required)
+CMD []
