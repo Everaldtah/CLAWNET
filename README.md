@@ -8,17 +8,24 @@ CLAWNET is a production-grade distributed AI mesh network that enables autonomou
 
 <div align="center">
 
-```
- ██████╗██╗      ██████╗ ██╗   ██╗██████╗  ██████╗ ██╗   ██╗
-██╔════╝██║     ██╔═══██╗██║   ██║██╔══██╗██╔═══██╗██║   ██║
-██║     ██║     ██║   ██║██║   ██║██║  ██║██║   ██║██║   ██║
-██║     ██║     ██║   ██║██║   ██║██║  ██║██║   ██║╚██╗ ██╔╝
-╚██████╗███████╗╚██████╔╝╚██████╔╝██████╔╝╚██████╔╝ ╚████╔╝
- ╚═════╝╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝  ╚═════╝   ╚═══╝
-      NETWORK - Distributed AI Mesh Network
-```
+<pre style="background-color: #0a0e1a; color: #00a8ff; font-family: 'Courier New', monospace; padding: 20px; border: 1px solid #ffffff; border-radius: 4px; display: inline-block;">
+┌─────────────────────────────────────────────────────────────┐
+│ * Welcome to the DISTRIBUTED AI MESH NETWORK!              │
+└─────────────────────────────────────────────────────────────┘
 
-**[ P2P AGENT COMMUNICATION | TASK MARKET | SWARM AI ]**
+ █████╗ ███╗   ██╗██╗ ██████╗██╗  ██╗██╗   ██╗███████╗███╗   ███╗
+ ██╔══██╗████╗  ██║██║██╔════╝██║  ██║██║   ██║██╔════╝████╗ ████║
+ ███████║██╔██╗ ██║██║██║     ███████║██║   ██║█████╗  ██╔████╔██║
+ ██╔══██║██║╚██╗██║██║██║     ██╔══██║██║   ██║██╔══╝  ██║╚██╔╝██║
+ ██║  ██║██║ ╚████║██║╚██████╗██║  ██║╚██████╔╝███████╗██║ ╚═╝ ██║
+ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝
+
+              DISTRIBUTED AI MESH NETWORK
+
+[ P2P AGENT COMMUNICATION | TASK MARKET | SWARM AI ]
+
+Login successful. Press Enter to continue
+</pre>
 
 </div>
 
