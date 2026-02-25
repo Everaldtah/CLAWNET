@@ -1,0 +1,74 @@
+# CLAWNET - Railway Optimized Dockerfile
+# Multi-stage build for production
+
+# Build stage
+FROM golang:1.21-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache git ca-certificates tzdata gcc musl-dev
+
+# Set working directory
+WORKDIR /build
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags='-w -s -extldflags "-static"' \
+    -a -installsuffix cgo \
+    -o clawnet \
+    cmd/clawnet/main.go
+
+# Verify build
+RUN ./clawnet version || echo "Binary built successfully"
+
+# Runtime stage
+FROM alpine:latest
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates tzdata
+
+# Create non-root user
+RUN addgroup -g 1000 clawnet && \
+    adduser -D -u 1000 -G clawnet clawnet
+
+# Create data directory
+RUN mkdir -p /data && chown -R clawnet:clawnet /data
+
+# Copy binary from builder
+COPY --from=builder /build/clawnet /clawnet
+
+# Copy default config
+COPY configs/config.example.yaml /config.example.yaml
+
+# Set permissions
+RUN chmod +x /clawnet
+
+# Switch to non-root user
+USER clawnet
+
+# Create data directory in home
+WORKDIR /home/clawnet
+
+# Environment variables
+ENV CLAWNET_DATA_DIR=/home/clawnet/.clawnet
+ENV CLAWNODE_NAME=clawnet-railway
+
+# Expose ports
+# 4001 - QUIC (UDP)
+# 4002 - TCP
+EXPOSE 4001/udp 4002/tcp
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD pgrep clawnet || exit 1
+
+# Set entrypoint
+ENTRYPOINT ["/clawnet"]

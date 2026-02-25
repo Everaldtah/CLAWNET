@@ -1,0 +1,15 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile",
+    "buildCommand": "echo 'Building CLAWNET...'"
+  },
+  "deploy": {
+    "startCommand": "/clawnet",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 100,
+    "restartPolicySeconds": 60,
+    "sleep": 1000
+  }
+}
