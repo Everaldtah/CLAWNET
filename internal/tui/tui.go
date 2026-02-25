@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -17,7 +18,6 @@ import (
 	"github.com/Everaldtah/CLAWNET/internal/network"
 	"github.com/Everaldtah/CLAWNET/internal/protocol"
 	"github.com/Everaldtah/CLAWNET/internal/social"
-	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sirupsen/logrus"
 )
 
@@ -117,6 +117,21 @@ func DefaultKeyMap() KeyMap {
 			key.WithKeys("o"),
 			key.WithHelp("o", "logs"),
 		),
+	}
+}
+
+// ShortHelp returns key bindings for short help view
+func (k KeyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Quit, k.Tab, k.Market, k.Peers, k.Memory}
+}
+
+// FullHelp returns key bindings for full help view
+func (k KeyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.Up, k.Down, k.Left, k.Right},
+		{k.Enter, k.Help},
+		{k.Market, k.Peers, k.Memory, k.Logs},
+		{k.Quit},
 	}
 }
 
@@ -366,13 +381,11 @@ func (m *Model) renderMarketPanel() string {
 	if m.market != nil {
 		auctions := m.market.GetActiveAuctions()
 		for _, auction := range auctions {
-			auction.mu.RLock()
 			info := fmt.Sprintf("  %s | Budget: %.2f | Bids: %d\n",
 				auction.ID[:8],
 				auction.MaxBudget,
 				len(auction.Bids),
 			)
-			auction.mu.RUnlock()
 			content.WriteString(info)
 		}
 	}
@@ -382,13 +395,11 @@ func (m *Model) renderMarketPanel() string {
 	if m.market != nil {
 		tasks := m.market.GetActiveTasks()
 		for _, task := range tasks {
-			task.mu.RLock()
 			info := fmt.Sprintf("  %s | Type: %s | Status: %s\n",
 				task.ID[:8],
 				task.OriginalTask.Type,
 				task.Status,
 			)
-			task.mu.RUnlock()
 			content.WriteString(info)
 		}
 	}
@@ -465,7 +476,7 @@ func (m *Model) renderSocialPanel() string {
 		content.WriteString("    /social follow <peer_id>\n")
 	} else {
 		for i, post := range trending {
-			content.WriteString(fmt.Sprintf("  %d. %s\n", i+1, truncate(post.Title, 40)))
+			content.WriteString(fmt.Sprintf("  %d. %s\n", i+1, truncateString(post.Title, 40)))
 			content.WriteString(fmt.Sprintf("     ↑%d | %s | %v\n",
 				post.Upvotes,
 				post.Type,
@@ -681,6 +692,18 @@ func (m *Model) tick() tea.Cmd {
 // generateID generates a short ID
 func generateID() string {
 	return fmt.Sprintf("%d", time.Now().UnixNano())
+}
+
+// truncateString truncates a string to a maximum length
+func truncateString(s string, maxLen int) string {
+	runes := []rune(s)
+	if len(runes) <= maxLen {
+		return s
+	}
+	if maxLen <= 3 {
+		return string(runes[:maxLen])
+	}
+	return string(runes[:maxLen-3]) + "..."
 }
 
 // extractTags extracts hashtags from content
