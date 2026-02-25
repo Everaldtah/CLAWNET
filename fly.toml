@@ -1,6 +1,6 @@
 # fly.toml configuration for CLAWNET
-app = "clawnet"
-primary_region = "ord"
+app = "clawnet-asia"
+primary_region = "sin"  # Singapore, Asia
 
 [build]
   builtin = "go"

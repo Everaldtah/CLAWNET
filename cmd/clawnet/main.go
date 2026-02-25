@@ -204,9 +204,9 @@ func runNode(cmd *cobra.Command, args []string) {
 	if cfg.TUI.Enabled {
 		go func() {
 			if err := tui.Run(host, mkt, soc, logger); err != nil {
-				logger.WithError(err).Error("TUI error")
+				logger.WithError(err).Warn("TUI error - continuing in headless mode")
+				// Don't cancel context - node continues running without TUI
 			}
-			cancel()
 		}()
 	}
 
