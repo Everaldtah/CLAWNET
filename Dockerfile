@@ -19,6 +19,9 @@ RUN go mod download
 # Copy source code
 COPY . .
 
+# Debug: List what's in the build context
+RUN ls -la && ls -la cmd/ || echo "cmd directory not found"
+
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags='-w -s -extldflags "-static"' \
