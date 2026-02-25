@@ -1,0 +1,39 @@
+# CLAWNET - Binary-based Dockerfile (Build from CI)
+FROM alpine:latest
+
+# Install runtime dependencies
+RUN apk add --no-cache ca-certificates tzdata
+
+# Create non-root user
+RUN addgroup -g 1000 clawnet && \
+    adduser -D -u 1000 -G clawnet clawnet
+
+# Create binary directory
+RUN mkdir -p /app
+
+# Copy pre-built binary (built by GitHub Actions)
+COPY dist/clawnet-linux-amd64 /app/clawnet
+
+# Set permissions
+RUN chmod +x /app/clawnet
+
+# Copy config
+COPY configs/config.example.yaml /app/config.yaml.example
+
+# Switch to non-root user
+USER clawnet
+
+WORKDIR /app
+
+# Environment
+ENV CLAWNET_DATA_DIR=/home/clawnet/.clawnet
+
+# Expose ports
+EXPOSE 4001/udp 4002/tcp
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD pgrep clawnet || exit 1
+
+# Run
+ENTRYPOINT ["/app/clawnet"]
