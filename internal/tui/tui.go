@@ -282,6 +282,9 @@ func (m *Model) View() string {
 
 	var sections []string
 
+	// Logo
+	sections = append(sections, m.renderLogo())
+
 	// Header
 	sections = append(sections, m.renderHeader())
 
@@ -313,6 +316,25 @@ func (m *Model) renderHeader() string {
 	)
 
 	return titleStyle.Render(info)
+}
+
+// renderLogo renders the CLAWNET ASCII logo
+func (m *Model) renderLogo() string {
+	logoStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#00a8ff")).
+		Background(lipgloss.Color("#0a0e1a")).
+		Padding(0, 2)
+
+	logo := `
+ ███████╗██╗ ██████╗ ███╗   ██╗███████╗
+ ██╔════╝██║██╔═══██╗████╗  ██║██╔════╝
+ █████╗  ██║██║   ██║██╔██╗ ██║█████╗
+ ██╔══╝  ██║██║   ██║██║╚██╗██║██╔══╝
+ ██║     ██║╚██████╔╝██║ ╚████║███████╗
+ ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+`
+
+	return logoStyle.Render(logo)
 }
 
 // renderMainContent renders the main content area
