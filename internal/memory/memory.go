@@ -95,7 +95,7 @@ func NewMemoryManager(nodeID string, cfg *config.Config, identity *identity.Iden
 
 	// Open database
 	dbPath := fmt.Sprintf("%s/%s", cfg.GetConfigDir(), memoryDBName)
-	db, err := bbolt.Open(dbPath, 0600, &bbolt.Options{Timeout: 1 * time.Second})
+	db, err := bbolt.Open(dbPath, 0600, &bbolt.Options{Timeout: 30 * time.Second})
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to open memory database: %w", err)

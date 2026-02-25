@@ -320,21 +320,64 @@ func (m *Model) renderHeader() string {
 
 // renderLogo renders the CLAWNET ASCII logo
 func (m *Model) renderLogo() string {
-	logoStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#00ffff")).
-		Background(lipgloss.Color("#0a0e1a")).
-		Bold(true).
-		Padding(1, 2)
+	// ANSI color 39 (blue) and 45 (bright cyan)
+	blueStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#4169E1")) // Medium blue (ANSI 39)
 
-	logo := `
-▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-█ CLAWNET ████ ████ ████ ████ ████ ████ █
-█ ██████ ████ ████ ████ ████ ████ ████ █
-▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  DISTRIBUTED AI MESH NETWORK
-`
+	brightBlueStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#00CED1")) // Bright cyan (ANSI 45)
 
-	return logoStyle.Render(logo)
+	// Box top border
+	boxTop := blueStyle.Render("┌──────────────────────────────────────────────────────────────────────────────┐")
+	boxLine1 := blueStyle.Render("│") + "  * Welcome to the DISTRIBUTED AI MESH NETWORK!" + blueStyle.Render("                          │")
+	boxBottom := blueStyle.Render("└──────────────────────────────────────────────────────────────────────────────┘")
+
+	// CLAWNET in large block letters
+	clawnet1 := brightBlueStyle.Render("  ██████╗██╗      █████╗ ██╗    ██╗")
+	clawnet2 := brightBlueStyle.Render("  ██╔════╝██║     ██╔══██╗██║    ██║")
+	clawnet3 := brightBlueStyle.Render("  ██║     ██║     ███████║██║ █╗ ██║")
+	clawnet4 := brightBlueStyle.Render("  ██║     ██║     ██╔══██║██║███╗██║")
+	clawnet5 := brightBlueStyle.Render("  ╚██████╗███████╗██║  ██║╚███╔███╔╝")
+	clawnet6 := brightBlueStyle.Render("   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝")
+
+	// NETWORK in block letters
+	network1 := brightBlueStyle.Render("   ███╗   ██╗███████╗████████╗")
+	network2 := brightBlueStyle.Render("   ████╗  ██║██╔════╝╚══██╔══╝")
+	network3 := brightBlueStyle.Render("   ██╔██╗ ██║█████╗     ██║   ")
+	network4 := brightBlueStyle.Render("   ██║╚██╗██║██╔══╝     ██║   ")
+	network5 := brightBlueStyle.Render("   ██║ ╚████║███████╗   ██║   ")
+	network6 := brightBlueStyle.Render("   ╚═╝  ╚═══╝╚══════╝   ╚═╝   ")
+
+	// Subtitle and info
+	subtitle := blueStyle.Render("   DISTRIBUTED AI MESH NETWORK")
+	info := blueStyle.Render("   [ P2P AGENT COMMUNICATION | TASK MARKET | SWARM AI ]")
+
+	// Build the complete logo
+	var logo strings.Builder
+	logo.WriteString(boxTop + "\n")
+	logo.WriteString(boxLine1 + "\n")
+	logo.WriteString(boxBottom + "\n")
+	logo.WriteString("\n")
+	logo.WriteString(clawnet1 + "\n")
+	logo.WriteString(clawnet2 + "\n")
+	logo.WriteString(clawnet3 + "\n")
+	logo.WriteString(clawnet4 + "\n")
+	logo.WriteString(clawnet5 + "\n")
+	logo.WriteString(clawnet6 + "\n")
+	logo.WriteString("\n")
+	logo.WriteString(network1 + "\n")
+	logo.WriteString(network2 + "\n")
+	logo.WriteString(network3 + "\n")
+	logo.WriteString(network4 + "\n")
+	logo.WriteString(network5 + "\n")
+	logo.WriteString(network6 + "\n")
+	logo.WriteString("\n")
+	logo.WriteString(subtitle + "\n")
+	logo.WriteString("\n")
+	logo.WriteString(info + "\n")
+	logo.WriteString("\n")
+
+	return logo.String()
 }
 
 // renderMainContent renders the main content area
