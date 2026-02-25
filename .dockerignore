@@ -1,0 +1,41 @@
+# Ignore build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+clawnet
+clawnet-*
+build/
+dist/
+
+# Ignore test files
+*.out
+coverage.out
+coverage.html
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore environment files
+.env
+.env.local
+
+# Ignore data
+data/
+*.db
+*.key
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore config with secrets
+config.yaml
+
+# Explicitly include cmd directory (negative ignore)
+!cmd/
+!cmd/clawnet/
+!cmd/clawnet/main.go
