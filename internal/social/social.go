@@ -219,7 +219,7 @@ func NewSocialManager(
 		host:          host,
 		market:        market,
 		memory:        memory,
-		logger:        logger.WithField("component", "social"),
+		logger:        logger,
 		posts:         make(map[string]*Post),
 		threads:       make(map[string]*Thread),
 		profiles:      make(map[string]*AgentProfile),
@@ -333,7 +333,6 @@ func (sm *SocialManager) CreatePost(post *Post) error {
 			thread.Comments = append(thread.Comments, post)
 			thread.Participants[post.AuthorID] = true
 			thread.LastActivity = time.Now()
-			thread.CommentCount++
 			thread.mu.Unlock()
 
 			// Update parent post comment count
@@ -349,7 +348,7 @@ func (sm *SocialManager) CreatePost(post *Post) error {
 	profile.UpdatedAt = time.Now()
 
 	// Broadcast to network
-	payload := &SocialPostCreatePayload{
+	payload := &protocol.SocialPostCreatePayload{
 		Post:      post,
 		Timestamp: time.Now().UnixNano(),
 	}
@@ -405,7 +404,9 @@ func (sm *SocialManager) Vote(postID string, vote int) error {
 	// Get voter reputation
 	voterRep := 0.5 // Default
 	if sm.market != nil && sm.market.ReputationManager != nil {
-		voterRep = sm.market.ReputationManager.GetScore(voterID)
+		if rep, err := sm.market.ReputationManager.GetReputation(voterID); err == nil {
+			voterRep = rep.Score
+		}
 	}
 
 	// Calculate weighted vote
@@ -439,7 +440,7 @@ func (sm *SocialManager) Vote(postID string, vote int) error {
 	}
 
 	// Broadcast vote
-	payload := &SocialVotePayload{
+	payload := &protocol.SocialVotePayload{
 		PostID:     postID,
 		VoterID:    voterID,
 		Vote:       vote,
@@ -585,7 +586,7 @@ func (sm *SocialManager) Follow(targetID string) error {
 	targetProfile.FollowersCount++
 
 	// Broadcast follow
-	payload := &SocialFollowPayload{
+	payload := &protocol.SocialFollowPayload{
 		FollowerID: myID,
 		FolloweeID: targetID,
 		Timestamp:  time.Now().UnixNano(),
@@ -759,7 +760,7 @@ func (sm *SocialManager) UpdateProfile(updates map[string]interface{}) error {
 	profile.UpdatedAt = time.Now()
 
 	// Broadcast update
-	payload := &SocialProfileUpdatePayload{
+	payload := &protocol.SocialProfileUpdatePayload{
 		Profile:   profile,
 		Timestamp: time.Now().UnixNano(),
 	}
@@ -888,7 +889,7 @@ func indexOf(s, substr string) int {
 func (sm *SocialManager) rewardAuthor(authorID string, amount float64) {
 	if sm.market != nil && sm.market.Wallet != nil {
 		// Transfer reputation tokens
-		sm.market.Wallet.AddBalance(authorID, amount, "upvote_reward")
+		sm.market.Wallet.Deposit(sm.host.ID().String(), amount)
 	}
 }
 
@@ -976,7 +977,7 @@ func (sm *SocialManager) notifyFollowers(post *Post) {
 func (sm *SocialManager) registerHandlers() {
 	// Post create handler
 	sm.host.RegisterMessageHandler(protocol.MSG_TYPE_SOCIAL_POST_CREATE, func(ctx context.Context, msg *protocol.Message, from peer.ID) error {
-		var payload SocialPostCreatePayload
+		var payload protocol.SocialPostCreatePayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return err
 		}
@@ -1004,7 +1005,7 @@ func (sm *SocialManager) registerHandlers() {
 
 	// Vote handler
 	sm.host.RegisterMessageHandler(protocol.MSG_TYPE_SOCIAL_VOTE, func(ctx context.Context, msg *protocol.Message, from peer.ID) error {
-		var payload SocialVotePayload
+		var payload protocol.SocialVotePayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return err
 		}
@@ -1025,7 +1026,7 @@ func (sm *SocialManager) registerHandlers() {
 
 	// Follow handler
 	sm.host.RegisterMessageHandler(protocol.MSG_TYPE_SOCIAL_FOLLOW, func(ctx context.Context, msg *protocol.Message, from peer.ID) error {
-		var payload SocialFollowPayload
+		var payload protocol.SocialFollowPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return err
 		}
