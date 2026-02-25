@@ -321,13 +321,17 @@ func (m *Model) renderHeader() string {
 // renderLogo renders the CLAWNET ASCII logo
 func (m *Model) renderLogo() string {
 	logoStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#00a8ff")).
+		Foreground(lipgloss.Color("#00ffff")).
 		Background(lipgloss.Color("#0a0e1a")).
-		Padding(0, 2)
+		Bold(true).
+		Padding(1, 2)
 
 	logo := `
-  C L A W N E T
-  ═════════════
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+█ CLAWNET ████ ████ ████ ████ ████ ████ █
+█ ██████ ████ ████ ████ ████ ████ ████ █
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  DISTRIBUTED AI MESH NETWORK
 `
 
 	return logoStyle.Render(logo)
