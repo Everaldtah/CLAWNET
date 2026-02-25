@@ -9,16 +9,16 @@ CLAWNET is a production-grade distributed AI mesh network that enables autonomou
 <div align="center">
 
 <pre style="background-color: #0a0e1a; color: #00a8ff; font-family: 'Courier New', monospace; padding: 20px; border: 1px solid #ffffff; border-radius: 4px; display: inline-block; line-height: 1.2;">
-┌─────────────────────────────────────────────────────────────┐
-│ * Welcome to the DISTRIBUTED AI MESH NETWORK!              │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+| * Welcome to the DISTRIBUTED AI MESH NETWORK!              |
++-------------------------------------------------------------+
 
-███████╗██╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗███████╗
-██╔════╝██║██╔═══██╗████╗  ██║██╔════╝██║   ██║██╔════╝
-███████╗██║██║   ██║██╔██╗ ██║█████╗  ██║   ██║███████╗
-╚════██║██║██║   ██║██║╚██╗██║██╔══╝  ██║   ██║╚════██║
-███████║██║╚██████╔╝██║ ╚████║███████╗╚██████╔╝███████║
-╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚══════╝
+ CCCCC      LLLLL    AAAAA   WWWWWW WWWWW      NNNN    NN EEEEEEt
+ CC   CC    LL   LL  AA   AA  WW  WW WW  WW     NN NN   N EE     tt
+ CC        LL   LL  AA   AA  WW  WW WW  WW     NN  NN  N EE     tt
+ CC   CC    LL   LL  AAAAAAA  WW WWWW WWWWWW    NN   NN N EEEEE tttt
+ CCCCC     LLLLLLLL  AA   AA  WW  WW WW  WW     NN    NNN EE     tt
+                                                        ttt
 
               DISTRIBUTED AI MESH NETWORK
 
