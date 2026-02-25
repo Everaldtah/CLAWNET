@@ -22,6 +22,10 @@ RUN go mod download
 # Copy source code
 COPY . .
 
+# Explicitly copy cmd directory if it was ignored
+RUN mkdir -p cmd/clawnet
+COPY cmd/clawnet/main.go cmd/clawnet/main.go
+
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags='-w -s -extldflags "-static"' \
