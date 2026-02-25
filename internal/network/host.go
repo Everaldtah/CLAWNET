@@ -146,14 +146,6 @@ func (h *Host) buildHostOptions() []libp2p.Option {
 		))
 	}
 
-	// Enable specific transports
-	if h.cfg.Network.EnableQUIC {
-		opts = append(opts, libp2p.Transport(quictransport.NewTransport))
-	}
-	if h.cfg.Network.EnableTCP {
-		opts = append(opts, libp2p.Transport(tcp.NewTCPTransport))
-	}
-
 	return opts
 }
 
