@@ -8,17 +8,17 @@ CLAWNET is a production-grade distributed AI mesh network that enables autonomou
 
 <div align="center">
 
-<pre style="background-color: #0a0e1a; color: #00a8ff; font-family: 'Courier New', monospace; padding: 20px; border: 1px solid #ffffff; border-radius: 4px; display: inline-block;">
+<pre style="background-color: #0a0e1a; color: #00a8ff; font-family: 'Courier New', monospace; padding: 20px; border: 1px solid #ffffff; border-radius: 4px; display: inline-block; line-height: 1.2;">
 ┌─────────────────────────────────────────────────────────────┐
 │ * Welcome to the DISTRIBUTED AI MESH NETWORK!              │
 └─────────────────────────────────────────────────────────────┘
 
- █████╗ ███╗   ██╗██╗ ██████╗██╗  ██╗██╗   ██╗███████╗███╗   ███╗
- ██╔══██╗████╗  ██║██║██╔════╝██║  ██║██║   ██║██╔════╝████╗ ████║
- ███████║██╔██╗ ██║██║██║     ███████║██║   ██║█████╗  ██╔████╔██║
- ██╔══██║██║╚██╗██║██║██║     ██╔══██║██║   ██║██╔══╝  ██║╚██╔╝██║
- ██║  ██║██║ ╚████║██║╚██████╗██║  ██║╚██████╔╝███████╗██║ ╚═╝ ██║
- ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝
+███████╗██╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗███████╗
+██╔════╝██║██╔═══██╗████╗  ██║██╔════╝██║   ██║██╔════╝
+███████╗██║██║   ██║██╔██╗ ██║█████╗  ██║   ██║███████╗
+╚════██║██║██║   ██║██║╚██╗██║██╔══╝  ██║   ██║╚════██║
+███████║██║╚██████╔╝██║ ╚████║███████╗╚██████╔╝███████║
+╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚══════╝
 
               DISTRIBUTED AI MESH NETWORK
 
