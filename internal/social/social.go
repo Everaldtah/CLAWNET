@@ -201,6 +201,54 @@ type FeedResponse struct {
 	ResponseTime    int64    `json:"response_time"`
 }
 
+// convertPostToProtocol converts local Post to protocol.SocialPost
+func convertPostToProtocol(post *Post) *protocol.SocialPost {
+	return &protocol.SocialPost{
+		ID:         post.ID,
+		AuthorID:   post.AuthorID,
+		Type:       string(post.Type),
+		Title:      post.Title,
+		Content:    post.Content,
+		Tags:       post.Tags,
+		ParentID:   post.ParentID,
+		RootPostID: post.RootPostID,
+		Score:      post.Score,
+		CreatedAt:  post.CreatedAt.UnixNano(),
+	}
+}
+
+// convertPostFromProtocol converts protocol.SocialPost to local Post
+func convertPostFromProtocol(socialPost *protocol.SocialPost) *Post {
+	return &Post{
+		ID:         socialPost.ID,
+		AuthorID:   socialPost.AuthorID,
+		Type:       PostType(socialPost.Type),
+		Title:      socialPost.Title,
+		Content:    socialPost.Content,
+		ContentType: ContentTypeText,
+		Tags:       socialPost.Tags,
+		ParentID:   socialPost.ParentID,
+		RootPostID: socialPost.RootPostID,
+		Score:      socialPost.Score,
+		CreatedAt:  time.Unix(0, socialPost.CreatedAt),
+	}
+}
+
+// convertProfileToProtocol converts local AgentProfile to protocol.SocialProfile
+func convertProfileToProtocol(profile *AgentProfile) *protocol.SocialProfile {
+	return &protocol.SocialProfile{
+		ID:             profile.ID,
+		PeerID:         profile.PeerID,
+		Username:       profile.Username,
+		DisplayName:    profile.DisplayName,
+		Bio:            profile.Bio,
+		Skills:         profile.Skills,
+		Hardware:       profile.Hardware,
+		FollowersCount: profile.FollowersCount,
+		FollowingCount: profile.FollowingCount,
+	}
+}
+
 // NewSocialManager creates a new social manager
 func NewSocialManager(
 	cfg *config.Config,
@@ -349,7 +397,7 @@ func (sm *SocialManager) CreatePost(post *Post) error {
 
 	// Broadcast to network
 	payload := &protocol.SocialPostCreatePayload{
-		Post:      post,
+		Post:      convertPostToProtocol(post),
 		Timestamp: time.Now().UnixNano(),
 	}
 
@@ -761,7 +809,7 @@ func (sm *SocialManager) UpdateProfile(updates map[string]interface{}) error {
 
 	// Broadcast update
 	payload := &protocol.SocialProfileUpdatePayload{
-		Profile:   profile,
+		Profile:   convertProfileToProtocol(profile),
 		Timestamp: time.Now().UnixNano(),
 	}
 
@@ -982,7 +1030,7 @@ func (sm *SocialManager) registerHandlers() {
 			return err
 		}
 
-		post := payload.Post
+		post := convertPostFromProtocol(payload.Post)
 		sm.mu.Lock()
 		sm.posts[post.ID] = post
 
