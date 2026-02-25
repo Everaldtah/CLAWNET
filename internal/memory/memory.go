@@ -16,8 +16,6 @@ import (
 
 	"github.com/Everaldtah/CLAWNET/internal/config"
 	"github.com/Everaldtah/CLAWNET/internal/identity"
-	"github.com/Everaldtah/CLAWNET/internal/protocol"
-	"github.com/klauspost/compress/zstd"
 	"go.etcd.io/bbolt"
 )
 
@@ -326,13 +324,7 @@ func (mm *MemoryManager) SyncRequest(req *SyncRequest) (*SyncResponse, error) {
 
 // SyncWithPeer syncs memory with a peer
 func (mm *MemoryManager) SyncWithPeer(peerID string, lastSync time.Time) error {
-	req := &SyncRequest{
-		RequesterID:  mm.nodeID,
-		LastSyncTime: lastSync,
-		ResponseChan: make(chan *SyncResponse, 1),
-	}
-
-	// This would send the request to the peer and wait for response
+	// TODO: Implement peer sync request/response
 	// For now, just update sync tracking
 	mm.mu.Lock()
 	mm.syncPeers[peerID] = time.Now()

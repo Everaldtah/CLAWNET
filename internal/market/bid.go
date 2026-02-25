@@ -420,3 +420,16 @@ func uniqueStrings(strs []string) []string {
 func generateNonce() string {
 	return fmt.Sprintf("%d", time.Now().UnixNano())
 }
+
+// getSystemLoad returns the current system load (0.0 to 1.0)
+// For now, returns a simulated value based on time
+func getSystemLoad() float64 {
+	// Simulate load based on time of day
+	hour := time.Now().Hour()
+	if hour >= 9 && hour <= 17 {
+		// Business hours - higher load
+		return 0.6 + (float64(time.Now().Second()) / 1000.0)
+	}
+	// Off hours - lower load
+	return 0.2 + (float64(time.Now().Second()) / 2000.0)
+}

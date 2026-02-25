@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/ipfs/go-datastore v0.6.0
 	github.com/klauspost/compress v1.17.4
-	github.com/libp2p/go-libp2p v0.32.2
+	github.com/libp2p/go-libp2p v0.35.0
 	github.com/libp2p/go-libp2p-kad-dht v0.25.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/multiformats/go-multiaddr v0.12.0

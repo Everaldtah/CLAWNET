@@ -188,7 +188,7 @@ func (c *Client) CompleteStream(ctx context.Context, req *Request) (<-chan *Resp
 					FinishReason string `json:"finish_reason,omitempty"`
 				}
 
-				if err := json.Unmarshal(data, &chunk); err != nil {
+				if err := json.Unmarshal([]byte(data), &chunk); err != nil {
 					continue
 				}
 

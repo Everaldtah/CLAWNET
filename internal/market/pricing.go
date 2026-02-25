@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/Everaldtah/CLAWNET/internal/config"
+	"github.com/Everaldtah/CLAWNET/internal/protocol"
 	"github.com/mitchellh/go-homedir"
 	"go.etcd.io/bbolt"
 )

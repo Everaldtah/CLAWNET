@@ -65,7 +65,7 @@ func NewMarketManager(cfg *config.Config, identity *identity.Identity, logger *l
 	pricing := NewPricingEngine(cfg)
 
 	// Create escrow manager
-	escrow := NewEscrowManager(cfg, wallet, nil, logger)
+	escrow := NewEscrowManager(cfg, wallet, logger)
 
 	// Create auction manager
 	auction := NewAuctionManager(cfg, reputation, escrow, logger)

@@ -74,7 +74,6 @@ type AuctionManager struct {
 	auctions  map[string]*Auction
 	cfg      *config.Config
 	reputation *ReputationManager
-	scheduler  *Scheduler
 	escrow     *EscrowManager
 	logger     *logrus.Entry
 
