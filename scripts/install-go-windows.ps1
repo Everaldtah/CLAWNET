@@ -83,7 +83,6 @@ Write-Host "3. Run: go version" -ForegroundColor Yellow
 Write-Host "4. If Go works, navigate to CLAWNET:" -ForegroundColor Yellow
 Write-Host "   cd C:\Projects\CLAWNET\clawnet" -ForegroundColor Gray
 Write-Host ""
-Write-Host "================================================" -ForegroundColor Cyan
 
 Write-Host ""
 Write-Host "🎯 Want to test Go now? (y/N)" -ForegroundColor Cyan -NoNewline
@@ -106,5 +105,5 @@ Write-Host "🚀 Ready to build CLAWNET!" -ForegroundColor Green
 Write-Host "   Open a NEW PowerShell window and run:" -ForegroundColor Yellow
 Write-Host "   cd C:\Projects\CLAWNET\clawnet" -ForegroundColor Gray
 Write-Host "   go mod tidy" -ForegroundColor Gray
-Write-Host '   go build -o clawnet.exe cmd/clawnet/main.go' -ForegroundColor Gray
+Write-Host "   go build -o clawnet.exe cmd/clawnet/main.go" -ForegroundColor Gray
 Write-Host ""
