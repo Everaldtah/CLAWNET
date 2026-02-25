@@ -71,6 +71,7 @@ func (i *Identity) generate() error {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
+	// Generate ed25519 keypair
 	pub, priv, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		return fmt.Errorf("failed to generate Ed25519 key: %w", err)
@@ -79,10 +80,15 @@ func (i *Identity) generate() error {
 	i.privKey = priv
 	i.pubKey = pub
 
-	// Convert to libp2p format
-	libp2pPriv, libp2pPub, err := crypto.KeyPairFromStdKey(priv)
+	// Convert to libp2p format using the correct method
+	libp2pPriv, err := crypto.UnmarshalEd25519PrivateKey(priv)
 	if err != nil {
-		return fmt.Errorf("failed to convert to libp2p key: %w", err)
+		return fmt.Errorf("failed to convert to libp2p private key: %w", err)
+	}
+
+	libp2pPub, err := crypto.UnmarshalEd25519PublicKey(pub)
+	if err != nil {
+		return fmt.Errorf("failed to convert to libp2p public key: %w", err)
 	}
 
 	i.libp2pPriv = libp2pPriv
@@ -144,9 +150,15 @@ func (i *Identity) load() error {
 	i.privKey = ed25519.NewKeyFromSeed(seed)
 	i.pubKey = i.privKey.Public().(ed25519.PublicKey)
 
-	libp2pPriv, libp2pPub, err := crypto.KeyPairFromStdKey(i.privKey)
+	// Convert to libp2p format using the correct method
+	libp2pPriv, err := crypto.UnmarshalEd25519PrivateKey(i.privKey)
 	if err != nil {
-		return fmt.Errorf("failed to convert to libp2p key: %w", err)
+		return fmt.Errorf("failed to convert to libp2p private key: %w", err)
+	}
+
+	libp2pPub, err := crypto.UnmarshalEd25519PublicKey(i.pubKey)
+	if err != nil {
+		return fmt.Errorf("failed to convert to libp2p public key: %w", err)
 	}
 
 	i.libp2pPriv = libp2pPriv
