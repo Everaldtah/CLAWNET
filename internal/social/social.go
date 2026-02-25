@@ -225,7 +225,7 @@ func convertPostFromProtocol(socialPost *protocol.SocialPost) *Post {
 		Type:       PostType(socialPost.Type),
 		Title:      socialPost.Title,
 		Content:    socialPost.Content,
-		ContentType: ContentTypeText,
+		ContentType: ContentMarkdown,
 		Tags:       socialPost.Tags,
 		ParentID:   socialPost.ParentID,
 		RootPostID: socialPost.RootPostID,
