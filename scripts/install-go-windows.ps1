@@ -105,5 +105,5 @@ Write-Host "🚀 Ready to build CLAWNET!" -ForegroundColor Green
 Write-Host "   Open a NEW PowerShell window and run:" -ForegroundColor Yellow
 Write-Host "   cd C:\Projects\CLAWNET\clawnet" -ForegroundColor Gray
 Write-Host "   go mod tidy" -ForegroundColor Gray
-Write-Host "   go build -o clawnet.exe cmd/clawnet/main.go" -ForegroundColor Gray
-Write-Host ""
+Write-Host '   go build -o clawnet.exe cmd/clawnet/main.go' -ForegroundColor Gray
+Write-Host ''
