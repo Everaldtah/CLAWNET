@@ -20,6 +20,7 @@ type Config struct {
 	Market MarketConfig `mapstructure:"market"`
 	Memory MemoryConfig `mapstructure:"memory"`
 	OpenClaw OpenClawConfig `mapstructure:"openclaw"`
+	Social  SocialConfig  `mapstructure:"social"`
 	TUI    TUIConfig    `mapstructure:"tui"`
 	Log    LogConfig    `mapstructure:"log"`
 }
@@ -96,6 +97,20 @@ type OpenClawConfig struct {
 	Temperature     float64       `mapstructure:"temperature"`
 	Model           string        `mapstructure:"model"`
 	EnableStreaming bool          `mapstructure:"enable_streaming"`
+}
+
+// SocialConfig contains social media settings
+type SocialConfig struct {
+	Enabled                bool    `mapstructure:"enabled"`
+	FeedSize               int     `mapstructure:"feed_size"`
+	MaxPostLength          int     `mapstructure:"max_post_length"`
+	EnableMonetization     bool    `mapstructure:"enable_monetization"`
+	MinReputationToPost    float64 `mapstructure:"min_reputation_to_post"`
+	AllowAnonymousViewing  bool    `mapstructure:"allow_anonymous_viewing"`
+	AutoModeration         bool    `mapstructure:"auto_moderation"`
+	SpamThreshold          int     `mapstructure:"spam_threshold"`
+	TrendingAlgorithm      string  `mapstructure:"trending_algorithm"` // hot, top, new, controversial
+	FeedRefreshInterval    time.Duration `mapstructure:"feed_refresh_interval"`
 }
 
 // TUIConfig contains terminal UI settings
@@ -182,6 +197,18 @@ func DefaultConfig() *Config {
 			Temperature:     0.7,
 			Model:           "default",
 			EnableStreaming: true,
+		},
+		Social: SocialConfig{
+			Enabled:               true,
+			FeedSize:              100,
+			MaxPostLength:         10000,
+			EnableMonetization:     true,
+			MinReputationToPost:    0.0,
+			AllowAnonymousViewing:  true,
+			AutoModeration:        true,
+			SpamThreshold:         -10,
+			TrendingAlgorithm:     "hot",
+			FeedRefreshInterval:   30 * time.Second,
 		},
 		TUI: TUIConfig{
 			Enabled:         true,

@@ -53,6 +53,21 @@ const (
 	MSG_TYPE_OPENCLAW_PROMPT
 	MSG_TYPE_OPENCLAW_RESPONSE
 	MSG_TYPE_OPENCLAW_STREAM
+
+	// Social media messages (CLAWSocial)
+	MSG_TYPE_SOCIAL_POST_CREATE
+	MSG_TYPE_SOCIAL_POST_UPDATE
+	MSG_TYPE_SOCIAL_POST_DELETE
+	MSG_TYPE_SOCIAL_VOTE
+	MSG_TYPE_SOCIAL_COMMENT
+	MSG_TYPE_SOCIAL_FOLLOW
+	MSG_TYPE_SOCIAL_UNFOLLOW
+	MSG_TYPE_SOCIAL_PROFILE_UPDATE
+	MSG_TYPE_SOCIAL_DM
+	MSG_TYPE_SOCIAL_SUBSCRIBE
+	MSG_TYPE_SOCIAL_FEED_REQUEST
+	MSG_TYPE_SOCIAL_FEED_RESPONSE
+	MSG_TYPE_SOCIAL_TRENDING
 )
 
 func (mt MessageType) String() string {
@@ -113,6 +128,32 @@ func (mt MessageType) String() string {
 		return "OPENCLAW_RESPONSE"
 	case MSG_TYPE_OPENCLAW_STREAM:
 		return "OPENCLAW_STREAM"
+	case MSG_TYPE_SOCIAL_POST_CREATE:
+		return "SOCIAL_POST_CREATE"
+	case MSG_TYPE_SOCIAL_POST_UPDATE:
+		return "SOCIAL_POST_UPDATE"
+	case MSG_TYPE_SOCIAL_POST_DELETE:
+		return "SOCIAL_POST_DELETE"
+	case MSG_TYPE_SOCIAL_VOTE:
+		return "SOCIAL_VOTE"
+	case MSG_TYPE_SOCIAL_COMMENT:
+		return "SOCIAL_COMMENT"
+	case MSG_TYPE_SOCIAL_FOLLOW:
+		return "SOCIAL_FOLLOW"
+	case MSG_TYPE_SOCIAL_UNFOLLOW:
+		return "SOCIAL_UNFOLLOW"
+	case MSG_TYPE_SOCIAL_PROFILE_UPDATE:
+		return "SOCIAL_PROFILE_UPDATE"
+	case MSG_TYPE_SOCIAL_DM:
+		return "SOCIAL_DM"
+	case MSG_TYPE_SOCIAL_SUBSCRIBE:
+		return "SOCIAL_SUBSCRIBE"
+	case MSG_TYPE_SOCIAL_FEED_REQUEST:
+		return "SOCIAL_FEED_REQUEST"
+	case MSG_TYPE_SOCIAL_FEED_RESPONSE:
+		return "SOCIAL_FEED_RESPONSE"
+	case MSG_TYPE_SOCIAL_TRENDING:
+		return "SOCIAL_TRENDING"
 	default:
 		return "UNKNOWN"
 	}
@@ -471,6 +512,78 @@ type PeerInfoPayload struct {
 	Load         float64  `json:"load"`
 	Reputation   float64  `json:"reputation"`
 	WalletBalance float64 `json:"wallet_balance"`
+}
+
+// SocialPostCreatePayload represents a new social post
+type SocialPostCreatePayload struct {
+	Post      *SocialPost `json:"post"`
+	CID       string      `json:"cid,omitempty"`
+	Timestamp int64       `json:"timestamp"`
+}
+
+// SocialPost represents a social media post (simplified for protocol)
+type SocialPost struct {
+	ID          string        `json:"id"`
+	AuthorID    string        `json:"author_id"`
+	Type        string        `json:"type"`
+	Title       string        `json:"title"`
+	Content     string        `json:"content"`
+	Tags        []string      `json:"tags"`
+	ParentID    string        `json:"parent_id,omitempty"`
+	RootPostID  string        `json:"root_post_id,omitempty"`
+	Score       float64       `json:"score"`
+	CreatedAt   int64         `json:"created_at"`
+	CID         string        `json:"cid,omitempty"`
+	Signature   string        `json:"signature"`
+}
+
+// SocialVotePayload represents a vote on a post
+type SocialVotePayload struct {
+	PostID     string  `json:"post_id"`
+	VoterID    string  `json:"voter_id"`
+	Vote       int     `json:"vote"`
+	Weight     float64 `json:"weight"`
+	Timestamp  int64   `json:"timestamp"`
+}
+
+// SocialFollowPayload represents following an agent
+type SocialFollowPayload struct {
+	FollowerID  string `json:"follower_id"`
+	FolloweeID  string `json:"followee_id"`
+	Timestamp   int64  `json:"timestamp"`
+}
+
+// SocialProfileUpdatePayload represents profile updates
+type SocialProfileUpdatePayload struct {
+	Profile   *SocialProfile `json:"profile"`
+	Timestamp int64          `json:"timestamp"`
+}
+
+// SocialProfile represents an agent profile (simplified)
+type SocialProfile struct {
+	ID            string   `json:"id"`
+	PeerID        string   `json:"peer_id"`
+	Username      string   `json:"username"`
+	DisplayName   string   `json:"display_name"`
+	Bio           string   `json:"bio"`
+	Skills        []string `json:"skills"`
+	Hardware      string   `json:"hardware"`
+	FollowersCount int64   `json:"followers_count"`
+	FollowingCount int64   `json:"following_count"`
+}
+
+// SocialFeedRequest requests a feed from another node
+type SocialFeedRequest struct {
+	RequesterID   string   `json:"requester_id"`
+	LastTimestamp int64    `json:"last_timestamp"`
+	Limit         int      `json:"limit"`
+	Topics        []string `json:"topics,omitempty"`
+}
+
+// SocialFeedResponse returns feed posts
+type SocialFeedResponse struct {
+	Posts        []*SocialPost `json:"posts"`
+	ResponseTime int64         `json:"response_time"`
 }
 
 // generateNonce generates a random nonce

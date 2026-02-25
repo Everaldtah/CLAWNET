@@ -129,6 +129,35 @@ openclaw:
   # Enable streaming responses
   enable_streaming: true
 
+# CLAWSocial - Decentralized social media
+social:
+  enabled: true
+
+  # Feed configuration
+  feed_size: 100
+
+  # Post limits
+  max_post_length: 10000
+
+  # Monetization features
+  enable_monetization: true
+
+  # Minimum reputation to post (0.0 = anyone can post)
+  min_reputation_to_post: 0.0
+
+  # Allow anonymous viewing
+  allow_anonymous_viewing: true
+
+  # Auto-moderation
+  auto_moderation: true
+  spam_threshold: -10
+
+  # Trending algorithm (hot, top, new, controversial)
+  trending_algorithm: "hot"
+
+  # Feed refresh interval
+  feed_refresh_interval: "30s"
+
 # Terminal UI configuration
 tui:
   enabled: true

@@ -16,6 +16,7 @@ import (
 	"github.com/Everaldtah/CLAWNET/internal/market"
 	"github.com/Everaldtah/CLAWNET/internal/network"
 	"github.com/Everaldtah/CLAWNET/internal/protocol"
+	"github.com/Everaldtah/CLAWNET/internal/social"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/sirupsen/logrus"
 )
@@ -124,6 +125,7 @@ type Model struct {
 	// Dependencies
 	host       *network.Host
 	market     *market.MarketManager
+	social     *social.SocialManager
 	logger     *logrus.Logger
 
 	// UI state
@@ -159,7 +161,7 @@ type Model struct {
 }
 
 // NewModel creates a new TUI model
-func NewModel(host *network.Host, marketManager *market.MarketManager, logger *logrus.Logger) (*Model, error) {
+func NewModel(host *network.Host, marketManager *market.MarketManager, socialManager *social.SocialManager, logger *logrus.Logger) (*Model, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	s := spinner.New()
@@ -174,12 +176,13 @@ func NewModel(host *network.Host, marketManager *market.MarketManager, logger *l
 	m := &Model{
 		host:       host,
 		market:     marketManager,
+		social:     socialManager,
 		logger:     logger,
 		keys:       DefaultKeyMap(),
 		help:       help.New(),
 		spinner:    s,
 		input:      input,
-		panels:     []string{"peers", "market", "memory", "logs"},
+		panels:     []string{"peers", "market", "social", "memory", "logs"},
 		logs:       make([]string, 0, 100),
 		ctx:        ctx,
 		cancel:     cancel,
@@ -305,6 +308,8 @@ func (m *Model) renderMainContent() string {
 		return m.renderPeersPanel()
 	case "market":
 		return m.renderMarketPanel()
+	case "social":
+		return m.renderSocialPanel()
 	case "memory":
 		return m.renderMemoryPanel()
 	case "logs":
@@ -437,6 +442,56 @@ func (m *Model) renderLogsPanel() string {
 	return style.Render(content.String())
 }
 
+// renderSocialPanel renders the CLAWSocial panel
+func (m *Model) renderSocialPanel() string {
+	var content strings.Builder
+
+	if m.social == nil {
+		content.WriteString("CLAWSocial not initialized\n")
+		return boxStyle.Render(content.String())
+	}
+
+	// Get trending posts
+	trending := m.social.GetTrendingPosts(5)
+	content.WriteString("📱 CLAWSocial - Trending Posts\n\n")
+
+	if len(trending) == 0 {
+		content.WriteString("  No posts yet. Be the first!\n")
+		content.WriteString("\n  Commands:\n")
+		content.WriteString("    /social post \"Title\" \"Content\"\n")
+		content.WriteString("    /social feed\n")
+		content.WriteString("    /social trending\n")
+		content.WriteString("    /social upvote <id>\n")
+		content.WriteString("    /social follow <peer_id>\n")
+	} else {
+		for i, post := range trending {
+			content.WriteString(fmt.Sprintf("  %d. %s\n", i+1, truncate(post.Title, 40)))
+			content.WriteString(fmt.Sprintf("     ↑%d | %s | %v\n",
+				post.Upvotes,
+				post.Type,
+				time.Since(post.CreatedAt).Round(time.Minute)))
+		}
+		content.WriteString("\n")
+
+		// Show own profile
+		profile, _ := m.social.GetProfile(m.host.ID().String())
+		if profile != nil {
+			content.WriteString("─────────────────────────────\n")
+			content.WriteString(fmt.Sprintf("Your Profile:\n"))
+			content.WriteString(fmt.Sprintf("  Posts: %d\n", profile.PostsCount))
+			content.WriteString(fmt.Sprintf("  Followers: %d\n", profile.FollowersCount))
+			content.WriteString(fmt.Sprintf("  Reputation: %.2f\n", profile.Reputation))
+		}
+	}
+
+	style := boxStyle
+	if m.activePanel == 2 {
+		style = activeBoxStyle
+	}
+
+	return style.Render(content.String())
+}
+
 // renderCommandInput renders the command input
 func (m *Model) renderCommandInput() string {
 	return m.input.View()
@@ -484,6 +539,74 @@ func (m *Model) executeCommand(cmd string) {
 				m.addLog("Syncing memory...")
 			case "list":
 				m.addLog("Listing memory entries...")
+			}
+		}
+
+	case "/social":
+		if len(parts) >= 2 {
+			switch parts[1] {
+			case "post":
+				if len(parts) >= 3 {
+					title := parts[2]
+					content := strings.Join(parts[3:], " ")
+					if m.social != nil {
+						post := &social.Post{
+							Type:    social.PostTypeText,
+							Title:   title,
+							Content: content,
+							Tags:    extractTags(content),
+						}
+						if err := m.social.CreatePost(post); err != nil {
+							m.addLog(fmt.Sprintf("Error: %v", err))
+						} else {
+							m.addLog(fmt.Sprintf("Posted: %s", title))
+						}
+					}
+				}
+			case "feed":
+				if m.social != nil {
+					feed := m.social.GetFeed(10)
+					m.addLog(fmt.Sprintf("Feed: %d posts", len(feed)))
+					for _, post := range feed {
+						m.addLog(fmt.Sprintf("  - %s", post.Title))
+					}
+				}
+			case "trending":
+				if m.social != nil {
+					trending := m.social.GetTrendingPosts(5)
+					m.addLog(fmt.Sprintf("Trending: %d posts", len(trending)))
+					for _, post := range trending {
+						m.addLog(fmt.Sprintf("  - %s (↑%d)", post.Title, post.Upvotes))
+					}
+				}
+			case "upvote":
+				if len(parts) >= 3 && m.social != nil {
+					m.social.Vote(parts[2], 1)
+					m.addLog("Upvoted")
+				}
+			case "downvote":
+				if len(parts) >= 3 && m.social != nil {
+					m.social.Vote(parts[2], -1)
+					m.addLog("Downvoted")
+				}
+			case "follow":
+				if len(parts) >= 3 && m.social != nil {
+					m.social.Follow(parts[2])
+					m.addLog(fmt.Sprintf("Following %s", parts[2][:16]))
+				}
+			case "profile":
+				peerID := m.host.ID().String()
+				if len(parts) >= 3 && parts[2] != "me" {
+					peerID = parts[2]
+				}
+				if m.social != nil {
+					profile, err := m.social.GetProfile(peerID)
+					if err == nil {
+						m.addLog(fmt.Sprintf("Profile: %s", profile.DisplayName))
+						m.addLog(fmt.Sprintf("  Posts: %d", profile.PostsCount))
+						m.addLog(fmt.Sprintf("  Followers: %d", profile.FollowersCount))
+					}
+				}
 			}
 		}
 
@@ -560,9 +683,22 @@ func generateID() string {
 	return fmt.Sprintf("%d", time.Now().UnixNano())
 }
 
+// extractTags extracts hashtags from content
+func extractTags(content string) []string {
+	tags := []string{}
+	words := strings.Fields(content)
+	for _, word := range words {
+		if strings.HasPrefix(word, "#") {
+			tag := strings.TrimPrefix(word, "#")
+			tags = append(tags, tag)
+		}
+	}
+	return tags
+}
+
 // Run runs the TUI
-func Run(host *network.Host, market *market.MarketManager, logger *logrus.Logger) error {
-	model, err := NewModel(host, market, logger)
+func Run(host *network.Host, market *market.MarketManager, social *social.SocialManager, logger *logrus.Logger) error {
+	model, err := NewModel(host, market, social, logger)
 	if err != nil {
 		return err
 	}
