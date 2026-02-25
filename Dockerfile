@@ -4,6 +4,9 @@
 # Build stage
 FROM golang:1.21-alpine AS builder
 
+# Cache buster
+ARG CACHEBUST=1
+
 # Install build dependencies
 RUN apk add --no-cache git ca-certificates tzdata
 
