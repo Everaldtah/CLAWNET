@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Everaldtah/CLAWNET/internal/config"
@@ -164,14 +165,14 @@ func (c *Client) CompleteStream(ctx context.Context, req *Request) (<-chan *Resp
 				return
 			}
 
-			line = bytes.TrimSpace([]byte(line))
+			line = strings.TrimSpace(line)
 			if len(line) == 0 {
 				continue
 			}
 
 			// Parse SSE format
-			if bytes.HasPrefix(line, []byte("data: ")) {
-				data := bytes.TrimPrefix(line, []byte("data: "))
+			if strings.HasPrefix(line, "data: ") {
+				data := strings.TrimPrefix(line, "data: ")
 				
 				if string(data) == "[DONE]" {
 					responseChan <- &Response{

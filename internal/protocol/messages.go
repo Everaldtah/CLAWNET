@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -265,7 +266,7 @@ func (m *Message) VerifySignature(verifyFunc func(data, sig []byte) bool) bool {
 // Sign signs the message
 func (m *Message) Sign(signFunc func([]byte) []byte) {
 	hash := m.GenerateHash()
-	m.Header.Signature = EncodeToString(signFunc(hash))
+	m.Header.Signature = base64.StdEncoding.EncodeToString(signFunc(hash))
 }
 
 // Encode serializes the message to bytes
