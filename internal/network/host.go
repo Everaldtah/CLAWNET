@@ -10,7 +10,6 @@ import (
 	"github.com/Everaldtah/CLAWNET/internal/identity"
 	"github.com/Everaldtah/CLAWNET/internal/protocol"
 	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
@@ -81,8 +80,8 @@ func NewHost(cfg *config.Config, id *identity.Identity, logger *logrus.Logger) (
 	h := &Host{
 		cfg:             cfg,
 		identity:        id,
-		logger:          logger.WithField("component", "host"),
-		handlers:        make(map[protocol.ID]network.StreamHandler),
+		logger:          logger,
+		handlers:        make(map[libp2pprotocol.ID]network.StreamHandler),
 		messageHandlers: make(map[protocol.MessageType]MessageHandler),
 		peers:           make(map[peer.ID]*PeerInfo),
 		peerChan:        make(chan peer.ID, 100),
@@ -106,7 +105,7 @@ func NewHost(cfg *config.Config, id *identity.Identity, logger *logrus.Logger) (
 	h.host.SetStreamHandler(libp2pprotocol.ID(ClawnetProtocolID), h.handleStream)
 
 	// Set up connection notifications
-	h.host.Network().Notify(&network.NotifieeBundle{
+	h.host.Network().Notify(&network.NotifyBundle{
 		ConnectedF:    h.onPeerConnected,
 		DisconnectedF: h.onPeerDisconnected,
 	})
@@ -130,11 +129,15 @@ func (h *Host) buildHostOptions() []libp2p.Option {
 	}
 
 	// Connection manager
-	cm := connmgr.NewConnManager(
+	cm, err := connmgr.NewConnManager(
 		h.cfg.Node.MinPeers,
 		h.cfg.Node.MaxPeers,
 		connmgr.WithGracePeriod(time.Minute),
 	)
+	if err != nil {
+		cancel()
+		return nil, fmt.Errorf("failed to create connection manager: %w", err)
+	}
 	opts = append(opts, libp2p.ConnectionManager(cm))
 
 	// Enable relay if configured
@@ -382,7 +385,7 @@ func (h *Host) onPeerConnected(n network.Network, c network.Conn) {
 	if _, exists := h.peers[peerID]; !exists {
 		h.peers[peerID] = &PeerInfo{
 			ID:          peerID,
-			Addrs:       c.RemoteMultiaddr(),
+			Addrs:       []multiaddr.Multiaddr{c.RemoteMultiaddr()},
 			ConnectedAt: time.Now(),
 			LastSeen:    time.Now(),
 		}

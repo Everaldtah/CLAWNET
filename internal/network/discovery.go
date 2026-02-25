@@ -64,11 +64,6 @@ func NewDiscovery(ctx context.Context, h host.Host, cfg *config.Config, logger *
 		dht.RoutingTableFilter(dht.PublicRoutingTableFilter),
 		dht.DisableProviders(),
 		dht.DisableValues(),
-		providers.CacheOpts{
-			CacheSize:           128,
-			GCInterval:          time.Hour,
-			PersistenceInterval: time.Hour * 24,
-		},
 	)
 	if err != nil {
 		cancel()

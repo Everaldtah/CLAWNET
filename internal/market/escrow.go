@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Everaldtah/CLAWNET/internal/config"
-	"github.com/Everaldtah/CLAWNET/internal/protocol"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
