@@ -129,15 +129,11 @@ func (h *Host) buildHostOptions() []libp2p.Option {
 	}
 
 	// Connection manager
-	cm, err := connmgr.NewConnManager(
+	cm := connmgr.NewConnManager(
 		h.cfg.Node.MinPeers,
 		h.cfg.Node.MaxPeers,
 		connmgr.WithGracePeriod(time.Minute),
 	)
-	if err != nil {
-		cancel()
-		return nil, fmt.Errorf("failed to create connection manager: %w", err)
-	}
 	opts = append(opts, libp2p.ConnectionManager(cm))
 
 	// Enable relay if configured

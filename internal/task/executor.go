@@ -93,7 +93,7 @@ func (e *Executor) Execute(ctx context.Context, task *market.ScheduledTask) (*pr
 	execTask := &ExecutingTask{
 		ID:        task.ID,
 		Type:      task.OriginalTask.Type,
-		Data:      task.OriginalTask.Data,
+		Data:      json.RawMessage("{}"),
 		StartTime: time.Now(),
 	}
 
@@ -114,7 +114,7 @@ func (e *Executor) Execute(ctx context.Context, task *market.ScheduledTask) (*pr
 	}).Info("Executing task")
 
 	// Execute handler
-	result, err := handler(execCtx, task.OriginalTask.Data)
+	result, err := handler(execCtx, json.RawMessage("{}"))
 	if err != nil {
 		return nil, err
 	}
